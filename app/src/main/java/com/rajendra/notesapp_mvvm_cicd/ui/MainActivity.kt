@@ -3,27 +3,27 @@ package com.rajendra.notesapp_mvvm_cicd.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.rajendra.notesapp_mvvm_cicd.ui.theme.NotesApp_MVVM_CICDTheme
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.rajendra.notesapp_mvvm_cicd.ui.views.addnote.AddEditNoteScreen
+import com.rajendra.notesapp_mvvm_cicd.ui.views.notes.NotesScreen
+import com.rajendra.notesapp_mvvm_cicd.ui.theme.NotesAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            NotesApp_MVVM_CICDTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            NotesAppTheme {
+                Surface(modifier = Modifier) {
+                    NotesNavHost()
                 }
             }
         }
@@ -31,17 +31,33 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NotesApp_MVVM_CICDTheme {
-        Greeting("Android")
+fun NotesNavHost() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "notes"
+    ) {
+        composable("notes") {
+            NotesScreen(
+                onAddNote = { navController.navigate("addEditNote") },
+                onNoteClick = { noteId -> navController.navigate("addEditNote?noteId=$noteId") }
+            )
+        }
+        composable(
+            route = "addEditNote?noteId={noteId}",
+            arguments = listOf(
+                navArgument("noteId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStackEntry ->
+            val noteId = backStackEntry.arguments?.getInt("noteId")?.takeIf { it != -1 }
+            AddEditNoteScreen(
+                navController = navController,
+                noteId = noteId
+            )
+        }
     }
 }
+
