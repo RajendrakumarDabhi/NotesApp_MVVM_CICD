@@ -3,6 +3,7 @@ package com.rajendra.notesapp_mvvm_cicd.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,14 +15,18 @@ import androidx.navigation.navArgument
 import com.rajendra.notesapp_mvvm_cicd.ui.views.addnote.AddEditNoteScreen
 import com.rajendra.notesapp_mvvm_cicd.ui.views.notes.NotesScreen
 import com.rajendra.notesapp_mvvm_cicd.ui.theme.NotesAppTheme
+import com.rajendra.notesapp_mvvm_cicd.ui.views.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    val viewmmodel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NotesAppTheme {
+            NotesAppTheme(darkTheme = viewmmodel.isDark.value) {
                 Surface(modifier = Modifier) {
                     NotesNavHost()
                 }
