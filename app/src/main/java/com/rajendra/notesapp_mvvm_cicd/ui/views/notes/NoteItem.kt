@@ -7,8 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rajendra.notesapp_mvvm_cicd.R
 import com.rajendra.notesapp_mvvm_cicd.domain.model.Note
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +55,7 @@ fun NoteItem(
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete note",
+                    contentDescription = stringResource(id = R.string.delete_note),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
